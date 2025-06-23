@@ -25,10 +25,16 @@ jobs:
       - name: Download data if cache missed
         if: steps.cache-data.outputs.cache-hit != 'true'
         run: |
-          mkdir -p data
-          # Example: download a file
+          echo "Cache miss, downloading data..."
           bash .github/scripts/download_data.sh
 
+
+  use-data:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    steps:
       - name: Use the data
         run: |
           ls data
