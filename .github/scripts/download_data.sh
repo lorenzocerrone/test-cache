@@ -94,4 +94,4 @@ process_dataset "20200812-CardiomyocyteDifferentiation14-Cycle1-small-mip.zarr.z
 # To add more datasets, add more calls to process_dataset like this:
 # process_dataset "filename.zip" "download_url" "expected_md5_hash"
 
-echo "All datasets processed rand change"
+echo "All datasets processed"
