@@ -35,6 +35,12 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
     steps:
+      - uses: actions/checkout@v4
+      - name: Download shared data
+        uses: actions/download-artifact@v4
+        with:
+          name: shared-data
+          path: data/åå
       - name: Use the data
         run: |
           ls data
