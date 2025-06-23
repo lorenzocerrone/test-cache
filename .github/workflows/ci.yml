@@ -28,6 +28,12 @@ jobs:
           echo "Cache miss, downloading data..."
           bash .github/scripts/download_data.sh
 
+      - name: Upload data to cache
+        if: steps.cache-data.outputs.cache-hit != 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: shared-data
+          path: data/
 
   use-data:
     runs-on: ${{ matrix.os }}
