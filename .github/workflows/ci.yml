@@ -24,11 +24,9 @@ jobs:
             ${{ runner.os }}-
 
       - name: Check if cache hit
-        run: |
-          if [ "${{ steps.cache-data.outputs.cache-hit }}" != "true" ]; then
-            echo "Cache miss, failing the job."
-            exit 1
-          fi
+        if: steps.cache-data.outputs.cache-hit != 'true'
+        run: exit 1
+        
       - name: Use the data
         run: |
           ls data/
