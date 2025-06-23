@@ -1,0 +1,35 @@
+name: CI with cached data
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Restore data cache
+        id: cache-data
+        uses: actions/cache@v4
+        with:
+          path: data/
+          key: data-${{ hashFiles('.github/scripts/download_data.sh') }}
+          restore-keys: |
+            data-
+
+      - name: Download data if cache missed
+        if: steps.cache-data.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p data
+          # Example: download a file
+          bash .github/scripts/download_data.sh
+
+      - name: Use the data
+        run: |
+          ls data
+          # run your build/tests that use the data
