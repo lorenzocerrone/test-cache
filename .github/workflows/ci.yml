@@ -6,48 +6,30 @@ on:
   pull_request:
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Restore data cache
-        id: cache-data
-        uses: actions/cache@v4
-        with:
-          path: data/
-          key: data-${{ hashFiles('.github/scripts/download_data.sh') }}
-          restore-keys: |
-            data-
-
-      - name: Download data if cache missed
-        if: steps.cache-data.outputs.cache-hit != 'true'
-        run: |
-          echo "Cache miss, downloading data..."
-          bash .github/scripts/download_data.sh
-
-      - name: Upload shared data
-        uses: actions/upload-artifact@v4
-        with:
-          name: shared-data
-          path: data/
-
   use-data:
-    needs: build
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
     steps:
       - uses: actions/checkout@v4
-
-      - name: Download shared data
-        uses: actions/download-artifact@v4
+      
+      - name: Restore shared data cache
+        id: cache-data
+        uses: actions/cache@v4
         with:
-          name: shared-data
           path: data/
+          key: shared-data-${{ runner.os }}-${{ hashFiles('.github/scripts/download_data.sh') }}
+          restore-keys: |
+            shared-data-${{ runner.os }}-
 
+      - name: Check if cache hit
+        run: |
+          if [ "${{ steps.cache-data.outputs.cache-hit }}" != "true" ]; then
+            echo "Cache miss, failing the job."
+            exit 1
+          fi
       - name: Use the data
         run: |
-          ls data
+          ls data/
           # …your tests or build steps here

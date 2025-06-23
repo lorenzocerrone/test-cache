@@ -1,4 +1,4 @@
-name: CI with shared data
+name: Download and Cache Shared Data
 
 on:
   push:
